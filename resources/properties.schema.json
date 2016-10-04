@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Properties",
+  "description": "Properties object",
+  "type": "object",
+
+  "properties": {
+
+	"label": {
+	  "description": "Label for FTL issues. If issue doesn't have that label - FTL process will not be started",
+	  "type": "string"
+	},
+
+	"environments": {
+	  "type": "object",
+	  "properties": {
+		"prelive": {
+		  "description": "Name of Bamboo deployment environments for Prelive deployments. Script will search for this environment in deployment project mapped to the app",
+		  "type": "string"
+		},
+		"production": {
+		  "type": "object",
+		  "properties": {
+			"green": {
+			  "description": "Name of Bamboo deployment environments for Production GREEN deployments",
+			  "type": "string"
+			},
+			"blue": {
+			  "description": "Name of Bamboo deployment environments for Production BLUE deployments",
+			  "type": "string"
+			}
+		  }
+		},
+		"required": ["prelive", "production"]
+	  }
+	},
+
+	"environmentLifecycle": {
+	  "type": "object",
+	  "properties": {
+		"green": {
+		  "type": "object",
+		  "properties": {
+			"start":  {
+			  "description": "ID for environment responsible for staring environment",
+			  "type": "number"
+			}
+		  }
+		},
+		"blue": {
+		  "type": "object",
+		  "properties": {
+			"start":  {
+			  "description": "ID for environment responsible for staring environment",
+			  "type": "number"
+			}
+		  }
+		}
+	  }
+	},
+
+	"transitions": {
+	  "type": "object",
+	  "properties": {
+		"deployToPrelive": {
+		  "description": "Name of Jira workflow transition that will trigger deployments to Prelive",
+		  "type": "string"
+		},
+		"deployedToPrelive":  {
+		  "description": "Name of Jira workflow transition that will be triggered after successful deployments to Prelive",
+		  "type": "string"
+		},
+		"deployToProduction":  {
+		  "description": "Name of Jira workflow transition that will trigger deployments to Production",
+		  "type": "string"
+		},
+		"deployedToProduction": {
+		  "description": "Name of Jira workflow transition that will be triggered after successful deployments to Production",
+		  "type": "string"
+		},
+		"required": ["deployToPrelive", "deployedToPrelive", "deployToProduction", "deployedToProduction", "Pass"]
+	  }
+	},
+
+	"productionColoursUrl":  {
+	  "description": "URL to JSON file with information about current production colours",
+	  "type": "string"
+	},
+
+	"projects": {
+	  "type": "array",
+	  "items": {
+		"type": "object",
+		"description": "Array of projects where FTL should be enabled",
+		"properties": {
+		  "jiraProjectKey": {
+			"description": "Jira Project key (for example CQS)",
+			"type": "string"
+		  },
+		  "bambooBuildPlanKey": {
+			"description": "Bamboo release build plan key (for example 'release' branch build plan for website launcher: WL-BFT)",
+			"type": "string"
+		  },
+		  "bambooDeploymentId": {
+			"description": "ID for deployment plan using for this project. There may be many deployment projects for build plan but FTL will only use one defined here",
+			"type": "number"
+		  },
+		  "releaseBranch": {
+			"description": "Branch name that will be used as carrier for FTL cahnges to production (ideally it should be `release`)",
+			"type": "string"
+		  }
+		}
+	  },
+	  "minItems": 1
+	},
+
+	"allowMultipleFTLsWithStatuses": {
+	  "type": "array",
+	  "description": "Array of Jira issue's statuses that represent finished tickets or ticket is currently in progress. Application will prevent FTL worflow from executing if there are others FTL issues in the same project with statuses not defined here",
+	  "minItems": 1,
+	  "items": {
+		"type": "string"
+	  },
+	  "uniqueItems": true
+	},
+
+	"commentsVisibility": {
+	  "type": "object",
+	  "description": "Key => value pairs for comment visibility (key: string - name of visibility permissions, value: object - Jira comment visibility object)"
+	}
+  },
+  "required": [
+	"label",
+	"environments",
+	"environmentLifecycle",
+	"transitions",
+	"productionColoursUrl",
+  	"projects",
+	"commentsVisibility"
+  ]
+}

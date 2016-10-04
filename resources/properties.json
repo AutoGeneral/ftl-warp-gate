@@ -1,0 +1,39 @@
+{
+ "label": "FTL",
+  "environments": {
+	"prelive": "Prelive",
+	"production": {
+	  "green": "Production TEST GREEN",
+	  "blue": "Production TEST BLUE"
+	}
+  },
+  "environmentLifecycle": {
+	"green": {
+	  "start": 64815106
+	},
+	"blue": {
+	  "start": 64815105
+	}
+  },
+  "allowMultipleFTLsWithStatuses": [
+	"Done", "To Do", "In Progress", "Code Review and Test"
+  ],
+  "transitions": {
+	"pass": "Pass",
+	"thingsWentWrong": "Things Went Wrong",
+	"deployToPrelive": "Deploy To Prelive",
+	"deployedToPrelive": "Successful",
+	"deployToProduction": "Deploy To Production",
+	"deployedToProduction": "Successful"
+  },
+  "productionColoursUrl": "http://localhost/stats/colours.json",
+  "projects": [
+	{
+	  "jiraProjectKey": "WHAT",
+	  "bambooBuildPlanKey": "WL-BFT",
+	  "releaseBranch": "release",
+	  "bambooDeploymentId": 61276164
+	}
+  ],
+  "commentsVisibility": {}
+}
