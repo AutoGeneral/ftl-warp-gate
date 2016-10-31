@@ -100,6 +100,8 @@ class DeploymentRouter {
 		const planResultKey = req.body.planResultKey;
 		const issueKey = req.body.issueKey;
 
+		if (!issueKey) return ResponseHelpers.fail(res);
+
 		// Here we go ... all the FTL travels should involve some magic, right?
 		//
 		// There are no webhooks that we can use after the build is finished in Bamboo
@@ -128,9 +130,10 @@ class DeploymentRouter {
 	}
 
 	productionDeployment (req, res) {
-		assert(req.body.issue, 'issue body param must be defined');
 		const issueKey = req.body.issue.key;
 		const projectKey = req.body.issue.fields.project.key;
+
+		if (!issueKey || !projectKey) return ResponseHelpers.fail(res);
 
 		this.startNewProductionDeployment(projectKey, issueKey)
 			.catch(err => {
@@ -149,6 +152,8 @@ class DeploymentRouter {
 	yoloDeployment (req, res) {
 		const planResultKey = req.body.planResultKey;
 		const issueKey = req.body.issueKey;
+
+		if (!issueKey) return ResponseHelpers.fail(res);
 
 		// Read about this setTimeout magic in comments for `preliveDeployment` above
 		setTimeout(() => {
