@@ -30,7 +30,7 @@ class ResponseHelpers {
 		let result = data || {};
 		result.status = 'error';
 		result.code = code || HTTP_CODE.BAD_REQUEST;
-		res.send(data.code, result);
+		res.send(result.code, result);
 	}
 
 	/**
