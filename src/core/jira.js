@@ -1,11 +1,9 @@
-'use strict';
-
 const HTTP_METHOD = require('../constants').HTTP_METHOD;
 const assert = require('assert');
 const logger = require('winston');
 const request = require('request-promise');
 const moment = require('moment');
-const helpers = require('../helpers');
+const CommonHelpers = require('../helpers/common');
 
 
 /**
@@ -37,7 +35,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/issue/${issueKey}/comment`,
 			method: HTTP_METHOD.POST,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			body: {
 				body: comment,
 				visibility
@@ -60,7 +58,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/issue/${issueKey}?expand=${expand || ''}`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}
@@ -80,7 +78,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/issue/${issueKey}/transitions`,
 			method: HTTP_METHOD.POST,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			body: {
 				transition: {
 					id: transitionId
@@ -106,7 +104,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/version`,
 			method: HTTP_METHOD.POST,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			body: {
 				description: description || '',
 				name: name,
@@ -132,7 +130,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/issue/${issueKey}`,
 			method: HTTP_METHOD.PUT,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			body: {
 				update: {
 					fixVersions: [{'set':[{id : versionId}]}]
@@ -156,7 +154,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/version/${versionId}`,
 			method: HTTP_METHOD.PUT,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			body: {
 				released: true,
 				releaseDate: moment().format('YYYY-MM-DD')
@@ -189,7 +187,7 @@ class Jira {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/2/search?jql=${encodeURIComponent(jql)}`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}

@@ -1,10 +1,8 @@
-'use strict';
-
 const HTTP_METHOD = require('../constants').HTTP_METHOD;
 const assert = require('assert');
 const logger = require('winston');
 const request = require('request-promise');
-const helpers = require('../helpers');
+const CommonHelpers = require('../helpers/common');
 
 /**
  * @class
@@ -32,7 +30,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/plan/${buildPlanKey}?expand=branches&max-result=100`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}
@@ -50,7 +48,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/deploy/project/forPlan?planKey=${planKey}`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}
@@ -68,7 +66,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/deploy/project/${deploymentId}`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}
@@ -87,7 +85,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/deploy/environment/${environmentId}/results?max-result=${maxResult || 10}`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}
@@ -107,7 +105,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/queue/${releaseBranchKey}?executeAllStages`,
 			method: HTTP_METHOD.POST,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true,
 			form: variables
 		});
@@ -128,7 +126,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/queue/deployment?environmentId=${environmentId}&versionId=${deploymentVersionId}`,
 			method: HTTP_METHOD.POST,
-			headers: helpers.getBasicAuthHeaders(this._config)
+			headers: CommonHelpers.getBasicAuthHeaders(this._config)
 		});
 	}
 
@@ -149,7 +147,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/deploy/project/${deploymentId}/version`,
 			method: HTTP_METHOD.POST,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			body: {
 				planResultKey: planResultKey,
 				name: deploymentName
@@ -171,7 +169,7 @@ class Bamboo {
 		return request({
 			uri: `${this._config.baseUrl}/rest/api/latest/deploy/result/${deploymentResultId}`,
 			method: HTTP_METHOD.GET,
-			headers: helpers.getBasicAuthHeaders(this._config),
+			headers: CommonHelpers.getBasicAuthHeaders(this._config),
 			json: true
 		});
 	}

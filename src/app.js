@@ -1,5 +1,3 @@
-'use strict';
-
 const ROUTERS_PATH = `${__dirname}/routes`;
 const PROPERTIES_FILENAME = '../resources/properties.json';
 const PROPERTIES_SCHEMA_FILENAME = '../resources/properties.schema.json';

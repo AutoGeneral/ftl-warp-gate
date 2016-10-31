@@ -1,17 +1,24 @@
-'use strict';
+const FIELDS_TO_MASK = [
+	'accessKeyId',
+	'secretAccessKey',
+	'password',
+	'accountId'
+];
 
 const assert = require('assert');
 const logger = require('winston');
 
-const helpers = require('../helpers');
+const {ResponseHelpers} = require('../helpers');
 const Jira = require('../core/jira');
 const Bamboo = require('../core/bamboo');
+
 
 class StatusRouter {
 
 	constructor (app) {
 		assert(app.config.properties, 'Properties are not defined');
 		this._config = app.config;
+		this._server = app.server;
 		this._jira = new Jira(app.config.jira);
 		this._bamboo = new Bamboo(app.config.bamboo);
 
@@ -39,18 +46,20 @@ class StatusRouter {
 	 * @return {*}
      */
 	status (req, res) {
-		const sanitisedConfig = JSON.parse(JSON.stringify(this._config));
-		sanitisedConfig.jira.password = '******';
-		sanitisedConfig.bamboo.password = '******';
-		delete sanitisedConfig.properties;
 
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 
-		helpers.successResponse(res, {
+		const sanitisedConfig = ResponseHelpers.maskFields(JSON.parse(JSON.stringify(this._config)), FIELDS_TO_MASK);
+		const properties = Object.assign({}, sanitisedConfig.properties);
+		delete sanitisedConfig.properties;
+
+		ResponseHelpers.success(res, {
 			status: 'ok',
-			properties: this._config.properties,
-			config: sanitisedConfig
+			applicationName: 'FTL Warp Gate',
+			config: sanitisedConfig,
+			properties: properties,
+			routes: Object.keys(this._server.router.mounts).map(key => this._server.router.mounts[key].spec)
 		});
 	}
 }

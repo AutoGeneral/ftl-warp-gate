@@ -1,5 +1,3 @@
-'use strict';
-
 const COMMENT = require('../constants').COMMENT;
 const ERROR = require('../constants').ERROR;
 const TOO_MANY_FTL_EXCEPTION_MESSAGE = 'TOO_MANY_FTL';
@@ -7,10 +5,11 @@ const TOO_MANY_FTL_EXCEPTION_MESSAGE = 'TOO_MANY_FTL';
 const assert = require('assert');
 const logger = require('winston');
 
-const helpers = require('../helpers');
+const {ResponseHelpers, CommonHelpers} = require('../helpers');
 const Jira = require('../core/jira');
 const Bamboo = require('../core/bamboo');
 const TransitionRouter = require('./transition.router');
+
 
 class IssueLifecycleRouter {
 
@@ -72,12 +71,12 @@ class IssueLifecycleRouter {
 		const projectKey = req.body.issue.fields.project.key;
 		const issueKey = req.body.issue.key;
 
-		const properties = helpers.getPropertiesForJiraProject(this._config.properties, projectKey);
+		const properties = CommonHelpers.getPropertiesForJiraProject(this._config.properties, projectKey);
 		assert(properties, `There are no FTL mappings for project ${projectKey}`);
 
 		if (req.body.issue.fields.labels.indexOf(this._config.properties.label) === -1) {
 			logger.debug(`Issue ${req.body.issue.key} doesn't have label for FTL deployment`);
-			return helpers.successResponse(res);
+			return ResponseHelpers.success(res);
 		}
 		return this._jira.getUnreleasedFtlIssuesForProject(
 			projectKey,
@@ -114,18 +113,18 @@ class IssueLifecycleRouter {
 					this._config.properties.commentsVisibility.IT
 				);
 
-				helpers.successResponse(res, data);
+				ResponseHelpers.success(res, data);
 			})
 			.catch(err => {
 				logger.warn(err);
-				helpers.failResponse(res, {message: ERROR.INTERNAL});
+				ResponseHelpers.fail(res, {message: ERROR.INTERNAL});
 
 				// We don't need to post exception stack in case if we have too many ftl issues
 				// as we already have a nice message for that error
 				if (err.message !== TOO_MANY_FTL_EXCEPTION_MESSAGE) {
 					this._jira.addComment(
 						issueKey,
-						helpers.formatErrorForJira(err),
+						CommonHelpers.formatErrorForJira(err),
 						this._config.properties.commentsVisibility.IT
 					);
 				}
@@ -153,14 +152,14 @@ class IssueLifecycleRouter {
 
 				return this._jira.releaseProjectVersion(issue.fields.fixVersions[0].id);
 			})
-			.then(() => helpers.successResponse(res))
+			.then(() => ResponseHelpers.success(res))
 			.catch(err => {
 				logger.warn(err);
-				helpers.failResponse(res, {message: ERROR.INTERNAL});
+				ResponseHelpers.fail(res, {message: ERROR.INTERNAL});
 
 				this._jira.addComment(
 					issueKey,
-					helpers.formatErrorForJira(err),
+					CommonHelpers.formatErrorForJira(err),
 					this._config.properties.commentsVisibility.IT
 				);
 			});

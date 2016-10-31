@@ -16,11 +16,6 @@ module.exports = {
 		BLUE: 'blue'
 	},
 
-	HTTP_CODE: {
-		OK: 200,
-		BAD_REQUEST: 400
-	},
-
 	DEPLOYMENT_STATE: {
 		FAILED: 'FAILED',
 		SUCCESS: 'SUCCESS'

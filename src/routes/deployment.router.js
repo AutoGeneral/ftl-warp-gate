@@ -1,5 +1,3 @@
-'use strict';
-
 // Read the description below
 const ASYNC_DELAY = 20 * 1000; // 20 sec
 const PROD_ENVIRONMENT_START_WAIT = 5 * 60 * 1000; // 5 min
@@ -18,7 +16,7 @@ const TransitionRouter = require('./transition.router');
 const Bamboo = require('../core/bamboo');
 const Jira = require('../core/jira');
 const ProductionColourResolver = require('../core/colours');
-const helpers = require('../helpers');
+const {ResponseHelpers, CommonHelpers} = require('../helpers');
 
 
 class DeploymentRouter {
@@ -119,14 +117,14 @@ class DeploymentRouter {
 					logger.warn(err);
 					this._jira.addComment(
 						issueKey,
-						helpers.formatErrorForJira(err),
+						CommonHelpers.formatErrorForJira(err),
 						this._config.properties.commentsVisibility.IT
 					);
 				});
 		}, ASYNC_DELAY);
 
 		// Return positive result as we want Bamboo build job to be completed asap
-		helpers.successResponse(res);
+		ResponseHelpers.success(res);
 	}
 
 	productionDeployment (req, res) {
@@ -139,13 +137,13 @@ class DeploymentRouter {
 				logger.warn(err);
 				this._jira.addComment(
 					issueKey,
-					helpers.formatErrorForJira(err),
+					CommonHelpers.formatErrorForJira(err),
 					this._config.properties.commentsVisibility.IT
 				);
 			});
 
 		// Return positive result as we want Bamboo build job to be completed asap
-		helpers.successResponse(res);
+		ResponseHelpers.success(res);
 	}
 
 	yoloDeployment (req, res) {
@@ -171,14 +169,14 @@ class DeploymentRouter {
 					logger.warn(err);
 					this._jira.addComment(
 						issueKey,
-						helpers.formatErrorForJira(err),
+						CommonHelpers.formatErrorForJira(err),
 						this._config.properties.commentsVisibility.IT
 					);
 				});
 		}, ASYNC_DELAY);
 
 		// Return positive result as we want Bamboo build job to be completed asap
-		helpers.successResponse(res);
+		ResponseHelpers.success(res);
 	}
 
 	/**
@@ -217,7 +215,7 @@ class DeploymentRouter {
 			})
 			.then(data => {
 				const deploymentPlansIds = data.map(plan => plan.id);
-				properties = helpers.getPropertiesForDeployment(this._config.properties, deploymentPlansIds, planResultKey);
+				properties = CommonHelpers.getPropertiesForDeployment(this._config.properties, deploymentPlansIds, planResultKey);
 				assert(properties, `No project properties found for planResultKey: ${planResultKey}, deploymentPlansIds: ${deploymentPlansIds}`);
 
 				return this._bamboo.createNewDeploymentVersion(properties.bambooDeploymentId, planResultKey, deploymentName);
@@ -251,7 +249,7 @@ class DeploymentRouter {
 	 * @return {Promise}
      */
 	startNewProductionDeployment (projectKey, issueKey) {
-		const properties = helpers.getPropertiesForJiraProject(this._config.properties, projectKey);
+		const properties = CommonHelpers.getPropertiesForJiraProject(this._config.properties, projectKey);
 		assert(properties, `There are no FTL mappings for project ${projectKey}`);
 
 		logger.debug(`Executed (projectKey: ${projectKey}, issueKey: ${issueKey}`);
@@ -353,19 +351,19 @@ class DeploymentRouter {
 						return TransitionRouter.getTransitionFunction(this._jira, this._config.properties, transitionCode)(issueKey);
 					}
 					const err = `Deployment failed: [#${deploymentResultId}|${resultsUrl}]`;
-					this._jira.addComment(issueKey, helpers.formatErrorForJira(err));
+					this._jira.addComment(issueKey, CommonHelpers.formatErrorForJira(err));
 
 					// Execute fail transition
 					TransitionRouter.getTransitionFunction(this._jira, this._config.properties, 'fail')(issueKey);
 				})
 				.catch(err => {
 					logger.warn(err);
-					this._jira.addComment(issueKey, helpers.formatErrorForJira(err));
+					this._jira.addComment(issueKey, CommonHelpers.formatErrorForJira(err));
 				});
 		}, ASYNC_DELAY);
 
 		// Return positive result as we want Bamboo deployment job to be completed asap
-		helpers.successResponse(res);
+		ResponseHelpers.success(res);
 	}
 }
 

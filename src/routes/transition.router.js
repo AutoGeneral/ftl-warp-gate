@@ -1,11 +1,7 @@
-'use strict';
-
-const COMMENT = require('../constants').COMMENT;
-
 const assert = require('assert');
 const logger = require('winston');
 
-const helpers = require('../helpers');
+const {ResponseHelpers} = require('../helpers');
 const Jira = require('../core/jira');
 
 
@@ -56,7 +52,7 @@ class TransitionRouter {
 				})
 				.then(() => {
 					logger.info('success');
-					if (res) helpers.successResponse(res);
+					if (res) ResponseHelpers.success(res);
 				});
 		};
 	}

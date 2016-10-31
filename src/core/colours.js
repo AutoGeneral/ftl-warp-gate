@@ -1,5 +1,3 @@
-'use strict';
-
 const HTTP_METHOD = require('../constants').HTTP_METHOD;
 const COLOUR = require('../constants').COLOUR;
 

@@ -1,6 +1,7 @@
 const consul = require('consul')();
 const logger = require('winston');
 
+
 class Cosnul {
 
 	static register (name, port) {

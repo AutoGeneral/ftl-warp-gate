@@ -1,5 +1,3 @@
-'use strict';
-
 const RE_STACK_REPLACE1 = /(^[^\(]+?[\n$]|^\s+at\s+)/gm;
 const winston = require('winston');
 
