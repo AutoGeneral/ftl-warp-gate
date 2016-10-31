@@ -1,5 +1,5 @@
 {
- "label": "FTL",
+  "label": "FTL",
   "environments": {
 	"prelive": "Prelive",
 	"production": {
@@ -26,14 +26,19 @@
 	"deployToProduction": "Deploy To Production",
 	"deployedToProduction": "Successful"
   },
-  "productionColoursUrl": "http://localhost/stats/colours.json",
+  "productionColoursUrl": "http://devtools:8082/api/environment/prd",
   "projects": [
 	{
-	  "jiraProjectKey": "WHAT",
-	  "bambooBuildPlanKey": "WL-BFT",
+	  "jiraProjectKey": "FTLTEST",
+	  "bambooBuildPlanKey": "FD-FTP",
 	  "releaseBranch": "release",
 	  "bambooDeploymentId": 61276164
 	}
   ],
-  "commentsVisibility": {}
+  "commentsVisibility": {
+	"IT": {
+	  "type": "group",
+	  "value": "all-it"
+	}
+  }
 }
