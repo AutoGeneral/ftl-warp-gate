@@ -4,7 +4,8 @@ This is a middleware application that sits between Jira and Bamboo,
 reacts on remote calls via webhooks executing workflow transitions
 and operations needed for FTL deployments.
 
-Be careful with the documentation in Confluence - people forget to update it!
+We're not expecting anyone to use it as is because everyone's workflow is different. However
+this code can be utilised somewhere else.
 
 # Development
 

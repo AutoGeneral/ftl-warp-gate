@@ -135,15 +135,17 @@ class DeploymentRouter {
 
 		if (!issueKey || !projectKey) return ResponseHelpers.fail(res);
 
-		this.startNewProductionDeployment(projectKey, issueKey)
-			.catch(err => {
-				logger.warn(err);
-				this._jira.addComment(
-					issueKey,
-					CommonHelpers.formatErrorForJira(err),
-					this._config.properties.commentsVisibility.IT
-				);
-			});
+		setTimeout(() => {
+			this.startNewProductionDeployment(projectKey, issueKey)
+				.catch(err => {
+					logger.warn(err);
+					this._jira.addComment(
+						issueKey,
+						CommonHelpers.formatErrorForJira(err),
+						this._config.properties.commentsVisibility.IT
+					);
+				});
+		}, ASYNC_DELAY);
 
 		// Return positive result as we want Bamboo build job to be completed asap
 		ResponseHelpers.success(res);
@@ -353,6 +355,9 @@ class DeploymentRouter {
 			this._bamboo.getDeploymentResult(deploymentResultId)
 				.then(data => {
 					if (data.deploymentState === DEPLOYMENT_STATE.SUCCESS) {
+						if (transitionCode === 'deployedToProduction') {
+							this._jira.addComment(issueKey, COMMENT.DEPLOYED_TO_PRODUCTION);
+						}
 						return TransitionRouter.getTransitionFunction(this._jira, this._config.properties, transitionCode)(issueKey);
 					}
 					const err = `Deployment failed: [#${deploymentResultId}|${resultsUrl}]`;
@@ -363,7 +368,7 @@ class DeploymentRouter {
 				})
 				.catch(err => {
 					logger.warn(err);
-					this._jira.addComment(issueKey, CommonHelpers.formatErrorForJira(err));
+					// this._jira.addComment(issueKey, CommonHelpers.formatErrorForJira(err));
 				});
 		}, ASYNC_DELAY);
 

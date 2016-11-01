@@ -45,6 +45,7 @@ class TransitionRouter {
 					const targetTransition = transitions.find(transition => transition.name.toLowerCase() === transitionName.toLowerCase());
 
 					if (!targetTransition) {
+						logger.debug(`Available transitions: ${transitions.map(transition => transition.name.toLowerCase()).join(', ')}`);
 						throw new Error(`Transition "${transitionName}" not available for issue ${issueKey}, ignore it if that was YOLO mode`);
 					}
 
