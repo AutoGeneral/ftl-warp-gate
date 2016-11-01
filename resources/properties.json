@@ -16,7 +16,11 @@
 	}
   },
   "allowMultipleFTLsWithStatuses": [
-	"Done", "To Do", "In Progress", "Code Review and Test"
+	"Done",
+	"Closed",
+	"To Do",
+	"In Progress",
+	"Code Review and Test"
   ],
   "transitions": {
 	"pass": "Pass",
@@ -26,7 +30,7 @@
 	"deployToProduction": "Deploy To Production",
 	"deployedToProduction": "Successful"
   },
-  "productionColoursUrl": "http://devtools:8082/api/environment/prd",
+  "productionColoursUrl": "http://devtools.budgetdirect.com.au:8082/api/environment/prd",
   "projects": [
 	{
 	  "jiraProjectKey": "FTLTEST",

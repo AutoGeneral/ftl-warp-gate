@@ -33,7 +33,7 @@ class ProductionColourResolver {
 	 *		...
 	 *		"isGreen": true,
 	 *		"isBlue": false,
-	 *		"time": "2016-08-01T04:00:09.781Z"
+	 *		"lastUpdated": "2016-08-01T04:00:09.781Z"
 	 *	}
 	 */
 	constructor (url) {
@@ -46,7 +46,7 @@ class ProductionColourResolver {
      */
 	getColour () {
 		logger.debug(`ProductionColourResolver::getColour executed`);
-		return new Promise((resolve, reject) => {
+		return new Promise(resolve => {
 			request({
 				uri: this._url,
 				method: HTTP_METHOD.GET,
@@ -59,11 +59,11 @@ class ProductionColourResolver {
 				else if (data.isBlue) return resolve(COLOUR.BLUE);
 
 				logger.error('Info about current production colours is weird', data);
-				reject();
+				resolve();
 			})
 			.catch(err => {
 				logger.error('Can\'t get info about current production colours', err);
-				reject();
+				resolve();
 			});
 		});
 	}
@@ -77,9 +77,9 @@ class ProductionColourResolver {
      */
 	static isDataValid (data) {
 		logger.debug(`Executed`);
-		if (!data || !data.time) return false;
+		if (!data || !data.lastUpdated) return false;
 		if (data.isGreen && data.isBlue) return false; // environment switch in progress
-		return moment().diff(moment(data.time), 'minutes') < DATA_INVALIDATION_TIMEOUT;
+		return moment().diff(moment(data.lastUpdated), 'minutes') < DATA_INVALIDATION_TIMEOUT;
 	}
 }
 
